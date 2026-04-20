@@ -11,7 +11,6 @@ from datetime import datetime
 router = APIRouter()
 
 def get_booking_response(booking: Booking, db: Session):
-    # Calculate extra fields
     customer = booking.customer
     mechanic_user = booking.mechanic.user
     
@@ -26,15 +25,13 @@ def get_booking_response(booking: Booking, db: Session):
     if booking.vehicle:
         res.vehicle_info = f"{booking.vehicle.type} {booking.vehicle.brand} {booking.vehicle.model}"
     
-    # Amount
     if booking.payment:
         res.amount = booking.payment.amount
     elif booking.service:
         res.amount = booking.service.price
     else:
         res.amount = 0.0
-        
-    # Rating
+
     res.has_rating = booking.rating is not None
     if booking.rating:
         res.rating_data = {
@@ -55,7 +52,6 @@ def create_booking(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    # Create booking
     db_booking = Booking(
         customer_id=current_user.id,
         mechanic_id=booking_in.mechanic_id,
@@ -68,8 +64,6 @@ def create_booking(
     db.add(db_booking)
     db.commit()
     db.refresh(db_booking)
-    
-    # Create pickup request if needed
     if booking_in.pickup_required and booking_in.pickup_address:
         db_pickup = PickupRequest(
             booking_id=db_booking.id,

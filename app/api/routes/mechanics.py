@@ -12,13 +12,11 @@ from app.api.dependencies import get_current_active_user
 router = APIRouter()
 
 def get_mechanic_extra_info(mechanic: MechanicProfile, db: Session):
-    # Calculate average rating
     avg_rating = db.query(func.avg(Rating.score)).filter(Rating.mechanic_id == mechanic.id).scalar() or 0.0
     
-    # User info
+    
     user = mechanic.user
-    full_name = f"{user.first_name} {user.last_name}".strip()
-    name = full_name if full_name else user.username
+    name = user.full_name or user.username
     
     return {
         "workshopName": mechanic.workshop_name or (f"{name}'s Workshop" if name else "Workshop"),
@@ -34,7 +32,7 @@ def get_approved_mechanics(db: Session = Depends(get_db)):
     results = []
     for m in mechanics:
         extra = get_mechanic_extra_info(m, db)
-        # Create response object
+    
         m_res = MechanicProfileResponse.model_validate(m)
         m_res.workshopName = extra["workshopName"]
         m_res.phone = extra["phone"]
@@ -52,8 +50,7 @@ def search_mechanics(query: Optional[str] = Query(""), db: Session = Depends(get
         db_query = db_query.filter(
             or_(
                 User.username.icontains(query),
-                User.first_name.icontains(query),
-                User.last_name.icontains(query),
+                User.full_name.icontains(query),
                 MechanicProfile.specialty.icontains(query),
                 MechanicProfile.location.icontains(query)
             )
@@ -74,7 +71,7 @@ def search_mechanics(query: Optional[str] = Query(""), db: Session = Depends(get
 
 @router.put("/profile/", response_model=BaseResponse[MechanicProfileResponse])
 def update_mechanic_profile(
-    profile_data: dict, # Using dict for flexibility or should use schema
+    profile_data: dict,
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
@@ -85,15 +82,14 @@ def update_mechanic_profile(
         db.commit()
         db.refresh(profile)
     
-    # Update User fields if provided in profile_data
-    if "first_name" in profile_data: current_user.first_name = profile_data["first_name"]
-    if "last_name" in profile_data: current_user.last_name = profile_data["last_name"]
+    if "full_name" in profile_data: current_user.full_name = profile_data["full_name"]
+    if "name" in profile_data: current_user.full_name = profile_data["name"]
     if "email" in profile_data: current_user.email = profile_data["email"]
     if "phone_number" in profile_data: current_user.phone_number = profile_data["phone_number"]
     if "phone" in profile_data: current_user.phone_number = profile_data["phone"]
     if "address" in profile_data: current_user.address = profile_data["address"]
     
-    # Update Profile fields
+    
     if "workshop_name" in profile_data: profile.workshop_name = profile_data["workshop_name"]
     if "workshopName" in profile_data: profile.workshop_name = profile_data["workshopName"]
     if "bio" in profile_data: profile.bio = profile_data["bio"]

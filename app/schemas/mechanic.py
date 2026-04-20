@@ -19,7 +19,6 @@ class MechanicProfileResponse(MechanicProfileBase):
     is_approved: bool
     user: Optional[UserResponse] = None
     
-    # Calculated fields for frontend parity
     workshopName: Optional[str] = None
     phone: Optional[str] = None
     address: Optional[str] = None

@@ -13,20 +13,21 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
     role: Optional[str] = "ROLE_CUSTOMER"
-    name: Optional[str] = None # Field from frontend
-    phone: Optional[str] = None # Field from frontend
-    workshopName: Optional[str] = None # Field from frontend for mechanics
+    name: Optional[str] = None
+    phone: Optional[str] = None 
+    workshopName: Optional[str] = None
 
-class UserResponse(UserBase):
+class UserResponse(BaseModel):
     id: int
+    email: EmailStr
+    username: str
     role: str
     is_active: bool
     
-    # Parity fields for frontend
     name: Optional[str] = None
     phone: Optional[str] = None
+    address: Optional[str] = None
 
-    # Mechanic specific fields (populated if role is ROLE_MECHANIC)
     mechanicId: Optional[int] = None
     workshopName: Optional[str] = None
     specialty: Optional[str] = None
@@ -45,4 +46,4 @@ class LoginResponseData(BaseModel):
     role: str
 
 class ProfileResponse(UserResponse):
-    pass # Extend later if needed
+    pass 

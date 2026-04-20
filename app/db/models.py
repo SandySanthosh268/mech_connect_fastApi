@@ -4,25 +4,20 @@ from sqlalchemy.sql import func
 from app.db.database import Base
 
 class User(Base):
-    __tablename__ = "users_user" # Mimicking django default table name for custom user model
+    __tablename__ = "users_user"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(150), unique=True, index=True, nullable=False)
     email = Column(String(254), unique=True, index=True, nullable=False)
     password = Column(String(128), nullable=False)
-    first_name = Column(String(150), nullable=True)
-    last_name = Column(String(150), nullable=True)
-    is_active = Column(Boolean, default=True)
-    is_superuser = Column(Boolean, default=False)
-    is_staff = Column(Boolean, default=False)
     
-    # Custom fields
+    full_name = Column(String(255), nullable=True)
+    
+    is_active = Column(Boolean, default=True)
     role = Column(String(20), default="ROLE_CUSTOMER")
     phone_number = Column(String(15), nullable=True)
     address = Column(Text, nullable=True)
     
-    date_joined = Column(DateTime(timezone=True), server_default=func.now())
-
     mechanic_profile = relationship("MechanicProfile", back_populates="user", uselist=False)
     vehicles = relationship("Vehicle", back_populates="owner")
     bookings = relationship("Booking", foreign_keys="[Booking.customer_id]", back_populates="customer")
@@ -38,7 +33,6 @@ class MechanicProfile(Base):
     experience_years = Column(Integer, default=0)
     is_approved = Column(Boolean, default=False)
     location = Column(String(255), nullable=True)
-    profile_picture = Column(String(200), nullable=True) # Django URLField is basically Varchar 200
 
     user = relationship("User", back_populates="mechanic_profile")
     services = relationship("Service", back_populates="mechanic")
@@ -66,7 +60,6 @@ class Vehicle(Base):
     brand = Column(String(100), nullable=False)
     model = Column(String(100), nullable=False)
     registration_number = Column(String(20), unique=True, nullable=False)
-
     owner = relationship("User", back_populates="vehicles")
 
 class Booking(Base):

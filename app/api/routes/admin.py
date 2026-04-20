@@ -23,7 +23,7 @@ def admin_customers(db: Session = Depends(get_db), _ = Depends(is_admin)):
     results = []
     for c in customers:
         res = UserResponse.model_validate(c)
-        res.name = f"{c.first_name} {c.last_name or ''}".strip() or c.username
+        res.name = c.full_name or c.username
         res.phone = c.phone_number
         results.append(res)
     return BaseResponse(data=results)

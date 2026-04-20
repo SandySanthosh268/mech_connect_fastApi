@@ -40,7 +40,6 @@ def get_mechanic_feedback(mechanic_id: int, db: Session = Depends(get_db)):
     for f in feedback:
         try:
             f_res = FeedbackResponse.model_validate(f)
-            # Safe retrieval of customer name to prevent 500 crashes
             f_res.customer_name = f.customer.username if f.customer else "Verified Customer"
             results.append(f_res)
         except Exception:

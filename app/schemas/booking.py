@@ -55,8 +55,7 @@ class PickupRequestResponse(PickupRequestBase):
 
 class PaymentBase(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    # The frontend is inconsistent, sometimes sending 'booking' and sometimes 'bookingId'
-    # Prioritize booking_id/bookingId for serialization (from attributes)
+
     booking_id: int = Field(validation_alias=AliasChoices("booking_id", "bookingId", "booking"))
     amount: float
     payment_method: str = Field(validation_alias=AliasChoices("paymentMethod", "payment_method"))

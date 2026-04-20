@@ -28,6 +28,5 @@ def process_payment(
     db.commit()
     db.refresh(db_payment)
     
-    # Explicitly convert to the response model to ensure Pydantic V2 works correctly
     payment_res = PaymentResponse.model_validate(db_payment)
     return BaseResponse(data=payment_res, message="Payment processed successfully")

@@ -41,3 +41,16 @@ app.include_router(ratings.router, prefix=f"{settings.API_V1_STR}/ratings", tags
 app.include_router(feedback.router, prefix=f"{settings.API_V1_STR}/feedback", tags=["Feedback"])
 app.include_router(admin.router, prefix=f"{settings.API_V1_STR}/admin", tags=["Admin"])
 
+# import os
+# from fastapi.staticfiles import StaticFiles
+# from fastapi.responses import FileResponse
+
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# dist_path = os.path.join(BASE_DIR, "../dist")
+
+# app.mount("/assets", StaticFiles(directory=os.path.join(dist_path, "assets")), name="assets")
+
+# @app.get("/{full_path:path}")
+# def serve_frontend(full_path: str):
+#     return FileResponse(os.path.join(dist_path, "index.html"))

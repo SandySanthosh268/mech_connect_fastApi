@@ -2,10 +2,10 @@ import bcrypt
 from datetime import datetime, timedelta
 from typing import Any, Union
 from jose import jwt
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer
 from app.core.config import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login/form")
+security_scheme = HTTPBearer()
 
 def create_access_token(subject: Union[str, Any], expires_delta: timedelta = None) -> str:
     if expires_delta:

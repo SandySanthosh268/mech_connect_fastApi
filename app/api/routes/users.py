@@ -10,13 +10,13 @@ router = APIRouter()
 
 from app.db.models import User, MechanicProfile
 
-@router.get("/me/", response_model=BaseResponse[UserResponse])
+@router.get("/me/", response_model=BaseResponse[UserResponse], response_model_exclude_none=True)
 def get_user_me(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    res = UserResponse.from_orm(current_user)
-    res.name = f"{current_user.first_name} {current_user.last_name or ''}".strip() or current_user.username
+    res = UserResponse.model_validate(current_user)
+    res.name = current_user.full_name or current_user.username
     res.phone = current_user.phone_number
     
     if current_user.role == "ROLE_MECHANIC":
