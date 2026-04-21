@@ -4,8 +4,7 @@ from app.core.config import settings
 from app.db.database import engine, Base
 
 from app.db import models
-# Create the database tables automatically for Phase 1 & 2
-# In a real production setup, Alembic migrations should be used.
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -13,8 +12,6 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-# Configure CORS
-# Since the frontend runs on varied ports normally (e.g. 5173, 5174), we allow all or specify
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

@@ -78,6 +78,7 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
         profile = MechanicProfile(
             user_id=user_db.id,
             workshop_name=user_in.workshopName,
+            location=user_in.address,
             is_approved=False 
         )
         db.add(profile)

@@ -87,9 +87,11 @@ def update_mechanic_profile(
     if "email" in profile_data: current_user.email = profile_data["email"]
     if "phone_number" in profile_data: current_user.phone_number = profile_data["phone_number"]
     if "phone" in profile_data: current_user.phone_number = profile_data["phone"]
-    if "address" in profile_data: current_user.address = profile_data["address"]
+    if "address" in profile_data: 
+        current_user.address = profile_data["address"]
+        profile.location = profile_data["address"]
     
-    
+    # Update Profile fields
     if "workshop_name" in profile_data: profile.workshop_name = profile_data["workshop_name"]
     if "workshopName" in profile_data: profile.workshop_name = profile_data["workshopName"]
     if "bio" in profile_data: profile.bio = profile_data["bio"]
